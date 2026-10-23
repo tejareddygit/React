@@ -3,19 +3,25 @@ import axios from "axios";
 
 const App = () => {
   const [userData, setuserData] = useState([]);
+  const [index, setindex] = useState(1);
   const getData = async () => {
     const response = await axios.get(
-      "https://picsum.photos/v2/list?page=2&limit=30",
+      `https://picsum.photos/v2/list?page=${index}&limit=16`,
     );
     setuserData(response.data);
   };
 
-  useEffect(function () {
-    getData();
-  }, []);
+  useEffect(
+    function () {
+      getData();
+    },
+    [index],
+  );
 
   let printuserdata = (
-    <h2 className="font-gray-500 text-sm">No data available</h2>
+    <h2 className="font-gray-500 text-xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+      Loading ....
+    </h2>
   );
 
   if (userData.length > 0) {
@@ -37,14 +43,30 @@ const App = () => {
   }
 
   return (
-    <div className="bg-black h-screen overflow-auto text-white">
-      <div className="flex flex-wrap gap-4 ">{printuserdata}</div>
+    <div className="bg-black h-screen overflow-auto p-4 text-white">
+      <h1 className="fixed text-6xl bg-red-500">{index}</h1>
+      <div className="flex p-2 flex-wrap gap-4 mb-20">{printuserdata}</div>
 
-      <div className="flex justify-center gap-6 items-center pb-5">
-        <button className="bg-amber-500 px-5 py-3 cursor-pointer rounded font-bold text-black text-lg active:scale-95 ">
+      <div className="flex justify-center gap-6 h-[10%] items-center pb-5">
+        <button
+          onClick={() => {
+            if (index > 1) {
+              setindex(index - 1);
+              setuserData([]);
+            }
+          }}
+          className="bg-amber-500 px-5 py-3 cursor-pointer rounded font-bold text-black text-lg active:scale-95 "
+        >
           prev
         </button>
-        <button className="bg-amber-500 px-5 py-3 cursor-pointer rounded font-bold text-black text-lg active:scale-95 ">
+        <h2>Page {index}</h2>
+        <button
+          onClick={() => {
+            setuserData([]);
+            setindex(index + 1);
+          }}
+          className="bg-amber-500 px-5 py-3 cursor-pointer rounded font-bold text-black text-lg active:scale-95 "
+        >
           next
         </button>
       </div>
